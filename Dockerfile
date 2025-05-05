@@ -1,4 +1,4 @@
-FROM maven:3.9.9 AS MAVEN_TOOL_CHAIN
+FROM maven:3.9.9
 COPY . /app
 WORKDIR /app
 RUN mvn package
