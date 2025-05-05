@@ -1,3 +1,2 @@
 FROM maven:3.9.9
 COPY . /
-RUN mvn package
