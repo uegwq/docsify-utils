@@ -1,4 +1,4 @@
-FROM maven:4.0.0-rc-3 AS MAVEN_TOOL_CHAIN
+FROM maven:4.0.0-jdk-17-alpine AS MAVEN_TOOL_CHAIN
 # TODO go to the correct path
 COPY . /app
 WORKDIR /app
