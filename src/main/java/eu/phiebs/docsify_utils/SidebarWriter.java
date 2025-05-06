@@ -1,4 +1,4 @@
-package org.example;
+package eu.phiebs.docsify_utils;
 
 import java.io.File;
 import java.nio.file.Path;
