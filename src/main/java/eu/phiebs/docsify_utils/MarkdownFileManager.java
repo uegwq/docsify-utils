@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.*;
@@ -13,8 +13,8 @@ import org.apache.commons.io.*;
 public class MarkdownFileManager {
 
     private Map<String, String> fileLinksMap = new HashMap<>();
-    private Path sourceRootPath = Paths.get("C:\\Users\\Philip Fahrer\\Documents\\docsify.test\\docs");
-    private Path targetRootPath = Paths.get("C:\\Users\\Philip Fahrer\\Documents\\docsify.test\\rendered");
+    private Path sourceRootPath;
+    private Path targetRootPath;
     private Map<String,String> calloutTitleMap = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger(MarkdownFileManager.class.getName());
 
@@ -28,6 +28,31 @@ public class MarkdownFileManager {
      * @throws IOException if an I/O error occurs
      */
     public void generateFileStructure() throws InvalidPathException, IOException {
+        LOGGER.setLevel(Level.FINER);
+        //ConsoleHandler handler = new ConsoleHandler();
+        //handler.setFormatter();
+        LOGGER.getParent().getHandlers()[0].setFormatter(new SimpleFormatter() {
+            @Override
+            public String format(LogRecord record) {
+                String color;
+
+                if (record.getLevel() == Level.FINE || record.getLevel() == Level.FINER || record.getLevel() == Level.FINEST) {
+                    color = "\033[0;32m"; // Green
+                } else if (record.getLevel() == Level.INFO) {
+                    color = "\033[0;34m"; // Cyan
+                } else if (record.getLevel() == Level.WARNING) {
+                    color = "\033[0;33m"; // Yellow
+                } else if (record.getLevel().intValue() > Level.WARNING.intValue()) {
+                    color = "\033[0;31m"; // Red
+                } else {
+                    color = "\033[0m"; // Default (black/normal)
+                }
+
+                return color + "[" + record.getLevel() + "] - " + record.getMessage() + "\033[0m\n";
+            }
+        });
+        LOGGER.getParent().getHandlers()[0].setLevel(Level.FINER);
+
         LOGGER.info("Processing path: <" + sourceRootPath + ">");
 
         if (targetRootPath.toFile().exists()) {
@@ -51,7 +76,10 @@ public class MarkdownFileManager {
             LOGGER.fine("Successfully wrote sidebar file");
         } catch (IOException e) {
             LOGGER.warning("Could not write sidebar file");
-            e.printStackTrace();
+            LOGGER.severe("Error: " + e.getMessage());
+            for (StackTraceElement element : e.getStackTrace()) {
+                LOGGER.severe("Stacktrace: " + element);
+            }
         }
     }
     private boolean shouldCopyFile(Path file) {
