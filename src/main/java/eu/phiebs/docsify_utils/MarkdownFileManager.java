@@ -70,7 +70,8 @@ public class MarkdownFileManager {
 
 
         try {
-            FileWriter myWriter = new FileWriter(targetRootPath + "\\_sidebar.md");
+            Path sidebarPath = Paths.get(String.valueOf(targetRootPath), "_sidebar.md");
+            FileWriter myWriter = new FileWriter(sidebarPath.toFile());
             myWriter.write(SidebarWriter.getSidebarText(targetRootPath));
             myWriter.close();
             LOGGER.fine("Successfully wrote sidebar file");
